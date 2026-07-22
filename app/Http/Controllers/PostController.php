@@ -17,4 +17,12 @@ class PostController extends Controller
 
         return view('blog.index', ['posts' => $posts]);
     }
+
+    public function show(Post $post)
+    {
+        // N+1 problemini önlemek için yorumları ve yazarlarını eager load ediyoruz
+        $post->load('comments.user');
+
+        return view('blog.show', ['post' => $post]);
+    }
 }
