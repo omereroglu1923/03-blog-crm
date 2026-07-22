@@ -3,6 +3,9 @@
 
     <div class="max-w-2xl mx-auto p-6">
         <h1 class="text-2xl font-bold mb-6">Blog</h1>
+        @auth
+            <a href="{{ route('blog.create') }}" class="text-sm text-blue-600 mb-4 inline-block">+ Yeni Post</a>
+        @endauth
 
         @forelse ($posts as $post)
             <article class="mb-6 border-b pb-4">

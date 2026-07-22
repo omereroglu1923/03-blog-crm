@@ -9,6 +9,12 @@
 
         <div class="mt-4 whitespace-pre-line">{{ $post->body }}</div>
 
+        @can('update', $post)
+            <div class="mt-2">
+                <a href="{{ route('blog.edit', $post) }}" class="text-sm text-blue-600">Düzenle</a>
+            </div>
+        @endcan
+
         <hr class="my-8">
 
         <h2 class="text-xl font-semibold mb-4">Yorumlar ({{ $post->comments->count() }})</h2>
