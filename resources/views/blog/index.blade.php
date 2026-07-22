@@ -9,7 +9,9 @@
 
         @forelse ($posts as $post)
             <article class="mb-6 border-b pb-4">
-                <h2 class="text-xl font-semibold">{{ $post->title }}</h2>
+                <h2 class="text-xl font-semibold">
+                    <a href="{{ route('blog.show', $post) }}" class="hover:underline">{{ $post->title }}</a>
+                </h2>
                 <p class="text-sm text-gray-500">{{ $post->published_at->format('d.m.Y') }} — {{ $post->user->name }}</p>
                 <p class="mt-2">{{ Str::limit($post->body, 150) }}</p>
             </article>

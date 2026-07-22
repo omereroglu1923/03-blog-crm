@@ -19,9 +19,35 @@
 
         <h2 class="text-xl font-semibold mb-4">Yorumlar ({{ $post->comments->count() }})</h2>
 
+        @auth
+            <form method="POST" action="{{ route('comments.store', $post) }}" class="mb-6">
+                @csrf
+                <textarea name="body" rows="3" placeholder="Bir yorum yaz..." class="w-full border rounded px-3 py-2"></textarea>
+                @error('body')
+                    <p class="text-red-600 text-sm">{{ $message }}</p>
+                @enderror
+                <button type="submit" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded text-sm">Yorum Yap</button>
+            </form>
+        @else
+            <p class="text-sm text-gray-500 mb-6">
+                Yorum yapmak için <a href="{{ route('login.create') }}" class="text-blue-600">giriş yap</a>.
+            </p>
+        @endauth
+
         @forelse ($post->comments as $comment)
             <div class="mb-4 border-b pb-3">
-                <p class="text-sm font-medium">{{ $comment->user->name }}</p>
+                <div class="flex justify-between items-start">
+                    <p class="text-sm font-medium">{{ $comment->user->name }}</p>
+
+                    @can('delete', $comment)
+                        <form method="POST" action="{{ route('comments.destroy', [$post, $comment]) }}"
+                            onsubmit="return confirm('Yorumu silmek istediğine emin misin?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 text-xs">Sil</button>
+                        </form>
+                    @endcan
+                </div>
                 <p>{{ $comment->body }}</p>
             </div>
         @empty
