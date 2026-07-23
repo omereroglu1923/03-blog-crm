@@ -11,9 +11,19 @@ class CustomerController extends Controller
     use AuthorizesRequests;
 
     // Herkes (giriş yapmış her kullanıcı) tüm müşterileri görebilir
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest()->get();
+        $customers = Customer::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->input('search');
+
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->get();
 
         return view('crm.customers.index', ['customers' => $customers]);
     }

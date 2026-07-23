@@ -2,7 +2,14 @@
     <x-slot:title>Blog</x-slot:title>
 
     <div class="max-w-2xl mx-auto p-6">
+
         <h1 class="text-2xl font-bold mb-6">Blog</h1>
+
+        <form method="GET" action="{{ route('blog.index') }}" class="mb-6">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Başlığa göre ara..."
+                class="w-full border rounded px-3 py-2">
+        </form>
+
         @auth
             <a href="{{ route('blog.create') }}" class="text-sm text-blue-600 mb-4 inline-block">+ Yeni Post</a>
         @endauth
@@ -12,7 +19,8 @@
                 <h2 class="text-xl font-semibold">
                     <a href="{{ route('blog.show', $post) }}" class="hover:underline">{{ $post->title }}</a>
                 </h2>
-                <p class="text-sm text-gray-500">{{ $post->published_at->format('d.m.Y') }} — {{ $post->user->name }}</p>
+                <p class="text-sm text-gray-500">{{ $post->published_at->format('d.m.Y') }} — {{ $post->user->name }}
+                </p>
                 <p class="mt-2">{{ Str::limit($post->body, 150) }}</p>
             </article>
         @empty

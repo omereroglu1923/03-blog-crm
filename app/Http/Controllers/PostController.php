@@ -11,9 +11,12 @@ class PostController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
         $posts = Post::whereNotNull('published_at')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->input('search') . '%');
+            })
             ->latest('published_at')
             ->get();
 
