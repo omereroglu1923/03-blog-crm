@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\NoteController;
 
 // Sadece giriş yapmamış kullanıcılar erişebilir
 Route::middleware('guest')->group(function () {
@@ -47,4 +48,7 @@ Route::middleware('auth')->prefix('crm')->name('crm.')->group(function () {
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+
+    Route::post('/customers/{customer}/notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::delete('/customers/{customer}/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 });
