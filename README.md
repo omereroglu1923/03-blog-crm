@@ -1,58 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Blog + CRM — Laravel Practice Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A single Laravel application combining a public **blog** (with comments) and a private **CRM** (customer & notes tracking), built as an independent practice project after completing Laravel's official "Getting Started" bootcamp.
 
-## About Laravel
+**Live learning log:** this project was built step-by-step, error-by-error, with each real bug (route ordering conflicts, Eloquent casting, mass-assignment gotchas) documented and turned into a learning note. See [`02-chirper`](https://github.com/omereroglu1923/02-chirper) for the guided bootcamp project that came right before this one — this repo is the "now do it without the tutorial" step that followed it.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Why this project exists
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+After finishing Laravel's official bootcamp (Chirper — a Twitter-like microblog), the goal here was to apply the same fundamentals **independently**, without following a course, while deliberately introducing a few patterns the bootcamp didn't cover:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Two separate `belongsTo` relationships on a single model (`Comment` → `Post` + `User`, `Note` → `Customer` + `User`)
+- Nested resource routes (`/blog/{post}/comments`, `/crm/customers/{customer}/notes`)
+- Slug-based route model binding (`{post:slug}`)
+- Search/filtering with query strings
+- Two different authorization models side-by-side in the same app (author-only edit rights on the blog vs. shared-visibility/owner-only edit rights in the CRM)
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Blog (public)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Anyone can read published posts
+- Authenticated users can write, edit, and delete their own posts
+- Comments on posts (authenticated users only), each user can delete their own comments
+- Title-based search
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### CRM (private, fully authenticated)
 
-## Agentic Development
+- All authenticated users can view all customers (shared visibility)
+- Only the user who added a customer can edit or delete it
+- Notes on customers, with the same double-`belongsTo` pattern as comments
+- Name/email search
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Tech stack
+
+- **Laravel 13** (PHP 8.5)
+- **Blade** templates (no frontend framework yet — that comes later in the roadmap)
+- **SQLite** for local development
+- **Tailwind CSS 4**
+
+## Getting started
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/omereroglu1923/03-blog-crm.git
+cd 03-blog-crm
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+composer run dev
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Visit `http://localhost:8000/blog`.
 
-## Contributing
+## Project structure notes
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Authorization is handled entirely through Laravel **Policies** (`PostPolicy`, `CommentPolicy`, `CustomerPolicy`, `NotePolicy`) — no manual `if` checks scattered through controllers.
+- Models never mass-assign foreign keys directly; ownership is always set through relationship methods (`$user->posts()->create(...)`) or `associate()` for the second side of a double `belongsTo`.
 
-## Code of Conduct
+## Part of a larger roadmap
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+This project is the Phase 1 capstone of a self-directed full-stack roadmap (Laravel + DDD → React → React Native). Written notes from the learning process (in Turkish) are kept in a private Obsidian vault and will gradually be published as blog posts, cross-posted to dev.to/Hashnode with canonical links back to the original source.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This is a personal learning project — feel free to look around, but it's not intended as a reusable package or template.
