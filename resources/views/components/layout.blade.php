@@ -15,7 +15,7 @@
 
     <nav class="bg-white border-b px-6 py-4 flex gap-4 items-center">
         <a href="{{ route('blog.index') }}" class="font-semibold">Blog</a>
-
+        <a href="{{ route('crm.customers.index') }}" class="font-semibold">CRM</a>
         <div class="ml-auto flex gap-4 items-center text-sm">
             @auth
                 <span>Merhaba, {{ auth()->user()->name }}</span>

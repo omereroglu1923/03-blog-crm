@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CustomerController;
 
 // Sadece giriş yapmamış kullanıcılar erişebilir
 Route::middleware('guest')->group(function () {
@@ -35,3 +36,15 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
+
+Route::middleware('auth')->prefix('crm')->name('crm.')->group(function () {
+    // ÖNEMLİ: create, wildcard {customer}'dan ÖNCE tanımlanmalı (Adım 4'teki route sıralaması dersi)
+    Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+    Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+});
